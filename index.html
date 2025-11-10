@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Space Invaders - Ein modernes HTML5 Canvas Spiel mit Vanilla JavaScript">
+    <meta name="theme-color" content="#0f172a">
+    <title>Space Invaders | Vanilla JavaScript Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a2a4a 100%);
+            color: #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #scoreBoard {
+            font-size: 1.5rem;
+            color: #f1f5f9;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        #gameCanvas {
+            background-color: #000;
+            border: 3px solid #334155;
+            border-radius: 12px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(59, 130, 246, 0.1);
+            display: block;
+            max-width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        #instructions {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .control {
+            display: inline-block;
+            background-color: rgba(51, 65, 85, 0.5);
+            padding: 4px 12px;
+            border-radius: 6px;
+            margin: 0 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        #gameOverScreen {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            border-radius: 16px;
+            padding: 40px 35px;
+            text-align: center;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            max-width: 90%;
+            min-width: 280px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -55%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        #gameOverScreen h2 {
+            margin: 0 0 12px 0;
+            color: #ef4444;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        #gameOverScreen p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        #restartButton {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #restartButton:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        #restartButton:active {
+            transform: translateY(0);
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .footer-link {
+            color: #3b82f6;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            #gameCanvas {
+                max-width: 100%;
+            }
+
+            #instructions {
+                font-size: 0.8rem;
+            }
+
+            #gameOverScreen {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>🚀 Space Invaders</h1>
+        <p class="subtitle">Verteidig die Erde vor den Invasoren!</p>
+    </header>
+
+    <div class="game-container">
+        <div id="scoreBoard">Score: 0</div>
+        <canvas id="gameCanvas" width="600" height="400" aria-label="Game Canvas"></canvas>
+        <div id="instructions">
+            <span class="control">← →</span> zum Bewegen |
+            <span class="control">Leertaste</span> zum Schießen
+        </div>
+    </div>
+
+    <div id="gameOverScreen">
+        <h2>Game Over</h2>
+        <p id="finalScore"></p>
+        <button id="restartButton">↻ Neu starten</button>
+    </div>
+
+    <footer>
+        Erstellt mit Vanilla JavaScript & HTML5 Canvas | 
+        <a href="https://github.com/Guevo8/space-invaders-game" class="footer-link">GitHub Repo</a>
+    </footer>
+
+    <script>
+        // ============================================
+        // SPACE INVADERS - Vanilla JavaScript Version
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreBoard = document.getElementById('scoreBoard');
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            const finalScoreEl = document.getElementById('finalScore');
+            const restartButton = document.getElementById('restartButton');
+
+            // Sicherstelle korrekte Canvas-Dimensionen
+            canvas.width = 600;
+            canvas.height = 400;
+
+            let score = 0;
+            let gameActive = true;
+            let animationFrameId;
+
+            // ============ UTILITY CLASSES ============
+
+            class Vector {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                }
+            }
+
+            // ============ GAME CLASSES ============
+
+            class Player {
+                constructor() {
+                    this.width = 40;
+                    this.height = 20;
+                    this.position = new Vector(
+                        canvas.width / 2 - this.width / 2,
+                        canvas.height - this.height - 20
+                    );
+                    this.velocity = new Vector(0, 0);
+                    this.speed = 5;
+                    this.emoji = '🚀';
+                    this.fontSize = '28px';
+                }
+
+                draw() {
+                    ctx.font = this.fontSize;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(
+                        this.emoji,
+                        this.position.x + this.width / 2,
+                        this.position.y + this.height / 2
+                    );
+                }
+
+                update() {
+                    this.position.x += this.velocity.x;
+
+                    // Randbegrenzung
+                    if (this.position.x < 0) {
+                        this.position.x = 0;
+                    }
+                    if (this.position.x + this.width > canvas.width) {
+                        this.position.x = canvas.width - this.width;
+                    }
+                }
+
+                shoot() {
+                    projectiles.push(
+                        new Projectile(
+                            this.position.x + this.width / 2,
+                            this.position.y,
+                            -8,
+                            '#84cc16'
+                        )
+                    );
+                }
+            }
+
+            class Projectile {
+                constructor(x, y, speed, color) {
+                    this.position = new Vector(x, y);
+                    this.width = 5;
+                    this.height = 10;
+                    this.speed = speed;
+                    this.color = color;
+                }
+
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(
+                        this.position.x - this.width / 2,
+                        this.position.y,
+                        this.width,
+                        this.height
+                    );
+                }
+
+                update() {
+                    this.position.y += this.speed;
+                }
+            }
+
+            class Invader {
+                constructor(x, y) {
+                    this.width = 30;
+                    this.height = 30;
+                    this.position = new Vector(x, y);
+                    this.emoji = '👾';
+                    this.fontSize = '24px';
+                }
+
+                draw() {
+                    ctx.font = this.fontSize;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(
+                        this.emoji,
+                        this.position.x + this.width / 2,
+                        this.position.y + this.height / 2
+                    );
+                }
+
+                update(velocity) {
+                    this.position.x += velocity.x;
+                    this.position.y += velocity.y;
+                }
+
+                shoot() {
+                    invaderProjectiles.push(
+                        new Projectile(
+                            this.position.x + this.width / 2,
+                            this.position.y + this.height,
+                            4,
+                            '#ef4444'
+                        )
+                    );
+                }
+            }
+
+            class Grid {
+                constructor() {
+                    this.position = new Vector(0, 0);
+                    this.velocity = new Vector(2, 0);
+                    this.invaders = [];
+
+                    const columns = 8;
+                    const rows = 4;
+                    const spacingX = 45;
+                    const spacingY = 40;
+                    const startX = (canvas.width - (columns - 1) * spacingX) / 2 - 15;
+                    const startY = 40;
+
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < columns; c++) {
+                            this.invaders.push(
+                                new Invader(startX + c * spacingX, startY + r * spacingY)
+                            );
+                        }
+                    }
+                }
+
+                update() {
+                    let moveDown = false;
+                    let changeDirection = false;
+
+                    for (const invader of this.invaders) {
+                        if (
+                            invader.position.x + invader.width >= canvas.width &&
+                            this.velocity.x > 0
+                        ) {
+                            changeDirection = true;
+                            moveDown = true;
+                            break;
+                        }
+                        if (invader.position.x <= 0 && this.velocity.x < 0) {
+                            changeDirection = true;
+                            moveDown = true;
+                            break;
+                        }
+                    }
+
+                    if (changeDirection) {
+                        this.velocity.x *= -1;
+                        this.velocity.x *= 1.05;
+                    }
+
+                    if (moveDown) {
+                        for (const invader of this.invaders) {
+                            invader.update(new Vector(this.velocity.x, 20));
+                        }
+                    } else {
+                        for (const invader of this.invaders) {
+                            invader.update(new Vector(this.velocity.x, 0));
+                        }
+                    }
+
+                    if (Math.random() < 0.02 && this.invaders.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * this.invaders.length);
+                        this.invaders[randomIndex].shoot();
+                    }
+                }
+
+                draw() {
+                    this.invaders.forEach(invader => invader.draw());
+                }
+            }
+
+            // ============ GAME STATE ============
+
+            let player;
+            let grid;
+            let projectiles;
+            let invaderProjectiles;
+            const keys = {
+                ArrowLeft: false,
+                ArrowRight: false,
+                Space: false
+            };
+
+            // ============ GAME FUNCTIONS ============
+
+            function initGame() {
+                score = 0;
+                gameActive = true;
+                scoreBoard.textContent = `Score: ${score}`;
+                gameOverScreen.style.display = 'none';
+
+                player = new Player();
+                grid = new Grid();
+                projectiles = [];
+                invaderProjectiles = [];
+            }
+
+            function checkCollisions() {
+                // Spieler-Geschosse vs Invader
+                for (let i = projectiles.length - 1; i >= 0; i--) {
+                    const p = projectiles[i];
+                    for (let j = grid.invaders.length - 1; j >= 0; j--) {
+                        const inv = grid.invaders[j];
+
+                        if (
+                            p.position.x - p.width / 2 < inv.position.x + inv.width &&
+                            p.position.x + p.width / 2 > inv.position.x &&
+                            p.position.y < inv.position.y + inv.height &&
+                            p.position.y + p.height > inv.position.y
+                        ) {
+                            projectiles.splice(i, 1);
+                            grid.invaders.splice(j, 1);
+                            score += 100;
+                            scoreBoard.textContent = `Score: ${score}`;
+                            break;
+                        }
+                    }
+                }
+
+                // Invader-Geschosse vs Spieler
+                for (let i = invaderProjectiles.length - 1; i >= 0; i--) {
+                    const ip = invaderProjectiles[i];
+                    if (
+                        ip.position.x - ip.width / 2 < player.position.x + player.width &&
+                        ip.position.x + ip.width / 2 > player.position.x &&
+                        ip.position.y < player.position.y + player.height &&
+                        ip.position.y + ip.height > player.position.y
+                    ) {
+                        gameOver('Du wurdest getroffen!');
+                        return;
+                    }
+                }
+
+                // Gegner erreichen unteren Rand
+                for (const inv of grid.invaders) {
+                    if (inv.position.y + inv.height >= player.position.y) {
+                        gameOver('Die Invasion hat den Boden erreicht!');
+                        return;
+                    }
+                }
+
+                // Sieg
+                if (grid.invaders.length === 0) {
+                    gameOver('🎉 Du hast gewonnen!');
+                }
+            }
+
+            function gameOver(message) {
+                gameActive = false;
+                cancelAnimationFrame(animationFrameId);
+                finalScoreEl.textContent = `${message}\nDein Score: ${score}`;
+                gameOverScreen.style.display = 'block';
+            }
+
+            function gameLoop() {
+                if (!gameActive) return;
+
+                // Input
+                if (keys.ArrowLeft) {
+                    player.velocity.x = -player.speed;
+                } else if (keys.ArrowRight) {
+                    player.velocity.x = player.speed;
+                } else {
+                    player.velocity.x = 0;
+                }
+
+                // Update
+                player.update();
+                grid.update();
+
+                projectiles.forEach((p, index) => {
+                    if (p.position.y < 0) {
+                        projectiles.splice(index, 1);
+                    } else {
+                        p.update();
+                    }
+                });
+
+                invaderProjectiles.forEach((ip, index) => {
+                    if (ip.position.y > canvas.height) {
+                        invaderProjectiles.splice(index, 1);
+                    } else {
+                        ip.update();
+                    }
+                });
+
+                checkCollisions();
+
+                // Draw
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                player.draw();
+                grid.draw();
+                projectiles.forEach(p => p.draw());
+                invaderProjectiles.forEach(ip => ip.draw());
+
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+
+            // ============ EVENT LISTENERS ============
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') keys.ArrowLeft = true;
+                if (e.key === 'ArrowRight') keys.ArrowRight = true;
+                if (e.key === ' ') {
+                    if (gameActive && !keys.Space) {
+                        player.shoot();
+                    }
+                    keys.Space = true;
+                    e.preventDefault();
+                }
+            });
+
+            window.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowLeft') keys.ArrowLeft = false;
+                if (e.key === 'ArrowRight') keys.ArrowRight = false;
+                if (e.key === ' ') keys.Space = false;
+            });
+
+            restartButton.addEventListener('click', () => {
+                initGame();
+                gameLoop();
+            });
+
+            // ============ INITIALIZE ============
+
+            initGame();
+            gameLoop();
+        });
+    </script>
+</body>
+</html>
