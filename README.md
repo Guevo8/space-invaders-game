@@ -1,117 +1,130 @@
 # 🚀 Space Invaders Game
 
-Ein modernes, spielbares Space Invaders Spiel, gebaut mit Vanilla JavaScript und HTML5 Canvas. Vollständig deploy-fähig und optimiert für GitHub Pages.
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![HTML](https://img.shields.io/badge/HTML-100%25-orange.svg)](https://github.com/Guevo8/space-invaders-game)
+
+A modern, playable Space Invaders game built with vanilla JavaScript and HTML5 Canvas. Fully deploy-ready and optimized for GitHub Pages.
+
+## 🎮 Play Now
+
+**[▶️ Play the Game](https://guevo8.github.io/space-invaders-game/)**
 
 ## 🎮 Features
 
-- **Klassisches Gameplay**: Steuere dein Raumschiff und verteidige die Erde vor Invasoren
-- **Progressive Schwierigkeit**: Die Gegner werden schneller, je mehr du besiegst
-- **Moderne Technologie**: Vanilla JavaScript ohne externe Dependencies
-- **Vollständige Kollisionserkennung**: Genaue AABB-Hitboxen für alle Objekte
-- **Responsive Design**: Anpassbar an verschiedene Bildschirmgrößen
-- **Mobile-ready**: Keyboard-Steuerung mit geplanter Touchpad-Unterstützung
+- **Classic Gameplay**: Control the spaceship and defend Earth from invaders
+- **Progressive Difficulty**: Enemies speed up as more are defeated
+- **Modern Technology**: Vanilla JavaScript with no external dependencies
+- **Full Collision Detection**: Precise AABB hitboxes for all objects
+- **Responsive Design**: Adapts to different screen sizes
+- **Mobile-ready**: Keyboard controls with planned touchpad support
 
-## 🕹️ Spielanleitung
+## 🕹️ How to Play
 
-### Steuerung
-- **Pfeil Links / Pfeil Rechts**: Raumschiff bewegen
-- **Leertaste**: Schießen
-- **Nur am Spielfeldrand möglich**: Keine Bewegung außerhalb der Grenzen
+### Controls
 
-### Spielziel
-- Vernichte alle Gegner (👾) bevor sie dich erreichen
-- Jeder Gegner bringt +100 Punkte
-- Gewinne durch Vernichtung aller Wellen oder verliere durch:
-  - Gegner-Geschosse treffen dein Schiff (🚀)
-  - Gegner erreichen die untere Bildschirmkante
+- **Arrow Left / Arrow Right**: Move spaceship
+- **Spacebar**: Shoot
+- **Boundary limits**: No movement outside game area
 
-## 📁 Projektstruktur
+### Objective
+
+- Destroy all enemies (👾) before they reach the bottom
+- Each enemy gives +100 points
+- Win by eliminating all waves or lose if:
+  - Enemy projectiles hit the spaceship (🚀)
+  - Enemies reach the bottom edge
+
+## 📁 Project Structure
 
 ```
 space-invaders-game/
-├── index.html          # Hauptdatei (komplettes Spiel)
-├── README.md           # Diese Datei
+├── index.html          # Main file (complete game)
+├── README.md           # This file
 ├── LICENSE             # MIT License
-├── .gitignore          # Git-Ignore Regeln
-└── docs/               # Dokumentation
-    └── ARCHITECTURE.md # Technische Architektur
+├── .gitignore          # Git ignore rules
+└── docs/               # Documentation
+    ├── ARCHITECTURE.md # Technical architecture
+    └── DEPLOYMENT.md   # Deployment guide
 ```
 
-## 🚀 Deploy-Optionen
+## 🚀 Deployment Options
 
-### 1. GitHub Pages (Empfohlen)
+### 1. GitHub Pages (Recommended)
+
 ```bash
-# Aktiviere GitHub Pages in den Repository-Settings:
+# Enable GitHub Pages in Repository Settings:
 # Settings → Pages → Source: Deploy from a branch → main
-# Die App ist dann unter https://guevo8.github.io/space-invaders-game erreichbar
+# The app will be available at https://guevo8.github.io/space-invaders-game
 ```
 
-### 2. Lokal testen
+### 2. Local Testing
+
 ```bash
-# Option A: Mit Python
+# Option A: With Python
 python3 -m http.server 8000
 
-# Option B: Mit Node.js (http-server)
+# Option B: With Node.js (http-server)
 npx http-server
 
-# Dann öffne: http://localhost:8000
+# Then open: http://localhost:8000
 ```
 
-### 3. Andere Hosting-Optionen
-- **Vercel**: Direkt mit GitHub verbinden
-- **Netlify**: Drag & Drop oder Git-Integration
+### 3. Other Hosting Options
+
+- **Vercel**: Connect directly with GitHub
+- **Netlify**: Drag & drop or Git integration
 - **Surge.sh**: `npm install -g surge && surge`
 
-## 🔧 Technische Architektur
+## 🔧 Technical Architecture
 
-Das Spiel verwendet ein klassenbasiertes Objekt-Modell mit folgenden Komponenten:
+The game uses a class-based object model with the following components:
 
-- **Vector**: Utility-Klasse für Positionen und Geschwindigkeiten
-- **Player**: Steuerbare Spielfigur
-- **Projectile**: Geschosse von Spieler und Gegnern
-- **Invader**: Einzelne Gegner-Einheit
-- **Grid**: Verwaltung der Invader-Formation
+- **Vector**: Utility class for positions and velocities
+- **Player**: Controllable spaceship
+- **Projectile**: Projectiles from player and enemies
+- **Invader**: Individual enemy unit
+- **Grid**: Management of invader formation
 
-Siehe `docs/ARCHITECTURE.md` für detaillierten Aufbau.
+See `docs/ARCHITECTURE.md` for detailed structure.
 
-## 📊 Spielbalancing
+## 📊 Game Balancing
 
-- **Gegner pro Wave**: 8 Spalten × 4 Reihen = 32 Gegner
-- **Basisgeschwindigkeit**: 2 Pixel pro Update
-- **Geschwindigkeitssteigerung**: +5% bei jeder Richtungsänderung
-- **Spieler-Geschossgeschwindigkeit**: 8 Pixel pro Update (aufwärts)
-- **Gegner-Geschossgeschwindigkeit**: 4 Pixel pro Update (abwärts)
-- **Gegner-Schusswahrscheinlichkeit**: 2% pro Update
+- **Enemies per Wave**: 8 columns × 4 rows = 32 enemies
+- **Base Speed**: 2 pixels per update
+- **Speed Increase**: +5% with each direction change
+- **Player Projectile Speed**: 8 pixels per update (upward)
+- **Enemy Projectile Speed**: 4 pixels per update (downward)
+- **Enemy Shoot Probability**: 2% per update
 
-## 🎨 Design-Überblick
+## 🎨 Design Overview
 
-- **Farbschema**: Dark Mode (Slate/Blue Palette)
-- **Emojis**: 🚀 (Spieler) und 👾 (Gegner) für visuellen Appeal
-- **Schriftart**: Inter (Google Fonts) für modernes UI
-- **Canvas-Auflösung**: 600×400 Pixel
+- **Color Scheme**: Dark Mode (Slate/Blue Palette)
+- **Emojis**: 🚀 (Player) and 👾 (Enemy) for visual appeal
+- **Font**: Inter (Google Fonts) for modern UI
+- **Canvas Resolution**: 600×400 pixels
 
 ## 🔄 Roadmap
 
-- [ ] Sound-Effekte hinzufügen
-- [ ] Touch-Steuerung für Mobile
-- [ ] Mehrere Schwierigkeitsstufen
-- [ ] Leaderboard System
-- [ ] Powerups und spezielle Waffen
-- [ ] Boss-Gegner
-- [ ] Particle-Effekte bei Treffern
+- [ ] Add sound effects
+- [ ] Touch controls for mobile
+- [ ] Multiple difficulty levels
+- [ ] Leaderboard system
+- [ ] Powerups and special weapons
+- [ ] Boss enemies
+- [ ] Particle effects on hits
 
-## 📝 Lizenz
+## 📝 License
 
-Dieses Projekt ist unter der MIT License lizenziert. Siehe `LICENSE` für Details.
+This project is licensed under the MIT License. See `LICENSE` for details.
 
-## 🤝 Beitragen
+## 🤝 Contributing
 
-Contributions sind willkommen! Bitte erstelle einen Fork, entwickle auf einem Feature-Branch und stelle einen Pull Request.
+Contributions are welcome! Please fork the repository, develop on a feature branch, and submit a pull request.
 
-## 👨‍💻 Autor
+## 👨‍💻 Author
 
 **Guevo** - Solo Developer & Creative Technologist
 
 ---
 
-**Viel Spaß beim Spielen! 🎮**
+**Enjoy the game! 🎮**
